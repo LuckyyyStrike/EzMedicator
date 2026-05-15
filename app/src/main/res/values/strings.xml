@@ -64,6 +64,8 @@
     <!-- Permissions -->
     <string name="permission_notifications_title">Notifications required</string>
     <string name="permission_notifications_message">Allow notifications to receive medication reminders.</string>
+    <string name="permission_full_screen_title">Alarm screen permission</string>
+    <string name="permission_full_screen_message">Allow EzMedicator to display a full-screen alarm when reminders fire, even while the screen is off or the device is locked.</string>
     <string name="permission_exact_alarm_title">Exact alarms required</string>
     <string name="permission_exact_alarm_message">Grant exact alarm permission so reminders fire at the right time.</string>
     <string name="permission_open_settings">Open Settings</string>

@@ -2,6 +2,7 @@ package de.ingomohrmann.ezmedicator
 
 import android.Manifest
 import android.app.AlarmManager
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -88,6 +89,37 @@ private fun PermissionGate(content: @Composable () -> Unit) {
             },
             dismissButton = {
                 TextButton(onClick = { exactAlarmDismissed = true }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            },
+        )
+    }
+
+    // USE_FULL_SCREEN_INTENT (Android 14+ / API 34): required for the alarm screen
+    // to show over the lock screen. Without it reminders still work but won't pop up
+    // when the screen is off.
+    val needsFullScreenPrompt = remember {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE &&
+                !context.getSystemService(NotificationManager::class.java)
+                    .canUseFullScreenIntent()
+    }
+    var fullScreenDismissed by remember { mutableStateOf(false) }
+
+    if (needsFullScreenPrompt && !fullScreenDismissed) {
+        AlertDialog(
+            onDismissRequest = { fullScreenDismissed = true },
+            title = { Text(stringResource(R.string.permission_full_screen_title)) },
+            text = { Text(stringResource(R.string.permission_full_screen_message)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    fullScreenDismissed = true
+                    context.startActivity(Intent(Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT).apply {
+                        data = android.net.Uri.parse("package:${context.packageName}")
+                    })
+                }) { Text(stringResource(R.string.permission_open_settings)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { fullScreenDismissed = true }) {
                     Text(stringResource(R.string.cancel))
                 }
             },
