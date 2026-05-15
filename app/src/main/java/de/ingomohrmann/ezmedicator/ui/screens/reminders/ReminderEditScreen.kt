@@ -35,6 +35,7 @@ fun ReminderEditScreen(
     val cron by viewModel.cronExpression.collectAsState()
     val isEnabled by viewModel.isEnabled.collectAsState()
     val timeoutSeconds by viewModel.timeoutSeconds.collectAsState()
+    val autoDelayMinutes by viewModel.autoDelayMinutes.collectAsState()
     val vibrationEnabled by viewModel.vibrationEnabled.collectAsState()
     val soundEnabled by viewModel.soundEnabled.collectAsState()
     val soundUri by viewModel.soundUri.collectAsState()
@@ -44,6 +45,7 @@ fun ReminderEditScreen(
     LaunchedEffect(saved) { if (saved) onSaved() }
 
     var timeoutInput by remember(timeoutSeconds) { mutableStateOf(timeoutSeconds.toString()) }
+    var autoDelayInput by remember(autoDelayMinutes) { mutableStateOf(autoDelayMinutes.toString()) }
 
     val context = androidx.compose.ui.platform.LocalContext.current
     val defaultSoundLabel = stringResource(R.string.default_sound)
@@ -146,6 +148,19 @@ fun ReminderEditScreen(
                     timeoutInput.toIntOrNull()?.let { viewModel.setTimeout(it) }
                 },
                 label = { Text(stringResource(R.string.timeout_seconds)) },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.fillMaxWidth(),
+            )
+
+            // Auto-delay duration
+            OutlinedTextField(
+                value = autoDelayInput,
+                onValueChange = { v ->
+                    autoDelayInput = v.filter { it.isDigit() }
+                    autoDelayInput.toIntOrNull()?.let { viewModel.setAutoDelayMinutes(it) }
+                },
+                label = { Text(stringResource(R.string.auto_delay_minutes)) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth(),

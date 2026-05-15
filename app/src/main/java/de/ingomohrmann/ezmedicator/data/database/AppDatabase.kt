@@ -9,7 +9,7 @@ import de.ingomohrmann.ezmedicator.data.database.entities.Reminder
 
 @Database(
     entities = [Medication::class, Reminder::class],
-    version = 1,
+    version = 2,
     exportSchema = false,
 )
 abstract class AppDatabase : RoomDatabase() {

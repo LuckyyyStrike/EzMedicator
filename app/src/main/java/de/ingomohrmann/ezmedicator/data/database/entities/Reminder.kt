@@ -25,6 +25,7 @@ data class Reminder(
 
     // Notification settings
     val notificationTimeoutSeconds: Int = 300,
+    val autoDelayMinutes: Int = 30,
     val vibrationEnabled: Boolean = true,
     val soundEnabled: Boolean = true,
     val soundUri: String? = null,

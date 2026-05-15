@@ -31,6 +31,9 @@ class ReminderEditViewModel @Inject constructor(
     private val _timeoutSeconds = MutableStateFlow(300)
     val timeoutSeconds: StateFlow<Int> = _timeoutSeconds.asStateFlow()
 
+    private val _autoDelayMinutes = MutableStateFlow(30)
+    val autoDelayMinutes: StateFlow<Int> = _autoDelayMinutes.asStateFlow()
+
     private val _vibrationEnabled = MutableStateFlow(true)
     val vibrationEnabled: StateFlow<Boolean> = _vibrationEnabled.asStateFlow()
 
@@ -59,6 +62,7 @@ class ReminderEditViewModel @Inject constructor(
             _cronExpression.value = rem.cronExpression
             _isEnabled.value = rem.isEnabled
             _timeoutSeconds.value = rem.notificationTimeoutSeconds
+            _autoDelayMinutes.value = rem.autoDelayMinutes
             _vibrationEnabled.value = rem.vibrationEnabled
             _soundEnabled.value = rem.soundEnabled
             _soundUri.value = rem.soundUri
@@ -68,6 +72,7 @@ class ReminderEditViewModel @Inject constructor(
     fun setCron(value: String) { _cronExpression.value = value }
     fun setEnabled(value: Boolean) { _isEnabled.value = value }
     fun setTimeout(value: Int) { _timeoutSeconds.value = value }
+    fun setAutoDelayMinutes(value: Int) { _autoDelayMinutes.value = value }
     fun setVibration(value: Boolean) { _vibrationEnabled.value = value }
     fun setSoundEnabled(value: Boolean) { _soundEnabled.value = value }
     fun setSoundUri(uri: Uri?) { _soundUri.value = uri?.toString() }
@@ -87,6 +92,7 @@ class ReminderEditViewModel @Inject constructor(
                 cronExpression = _cronExpression.value.trim(),
                 isEnabled = _isEnabled.value,
                 notificationTimeoutSeconds = _timeoutSeconds.value,
+                autoDelayMinutes = _autoDelayMinutes.value,
                 vibrationEnabled = _vibrationEnabled.value,
                 soundEnabled = _soundEnabled.value,
                 soundUri = _soundUri.value,

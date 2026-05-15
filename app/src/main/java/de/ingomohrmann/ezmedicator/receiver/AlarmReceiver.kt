@@ -62,7 +62,7 @@ class AlarmReceiver : BroadcastReceiver() {
         }
 
         notificationHelper.showReminder(reminder, medication)
-        scheduleTimeout(context, reminderId, reminder.notificationTimeoutSeconds)
+        scheduleTimeout(context, reminderId, reminder.notificationTimeoutSeconds, reminder.autoDelayMinutes)
 
         // Schedule the next regular cron occurrence (only for non-snooze alarms)
         if (!isSnooze) {
@@ -70,12 +70,13 @@ class AlarmReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun scheduleTimeout(context: Context, reminderId: Long, timeoutSeconds: Int) {
+    private fun scheduleTimeout(context: Context, reminderId: Long, timeoutSeconds: Int, autoDelayMinutes: Int) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(context, NotificationActionReceiver::class.java).apply {
             action = NotificationActionReceiver.ACTION_TIMEOUT
             putExtra(NotificationHelper.EXTRA_REMINDER_ID, reminderId)
             putExtra(NotificationHelper.EXTRA_NOTIFICATION_ID, NotificationHelper.notificationId(reminderId))
+            putExtra("delay_ms", autoDelayMinutes * 60_000L)
         }
         val requestCode = (reminderId + 200_000L).toInt()
         val pending = PendingIntent.getBroadcast(

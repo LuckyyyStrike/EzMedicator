@@ -3,6 +3,8 @@ package de.ingomohrmann.ezmedicator.di
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import dagger.Module
@@ -19,10 +21,18 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
+    private val MIGRATION_1_2 = object : Migration(1, 2) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE reminders ADD COLUMN autoDelayMinutes INTEGER NOT NULL DEFAULT 30")
+        }
+    }
+
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): AppDatabase =
-        Room.databaseBuilder(context, AppDatabase::class.java, "ezmedicator.db").build()
+        Room.databaseBuilder(context, AppDatabase::class.java, "ezmedicator.db")
+            .addMigrations(MIGRATION_1_2)
+            .build()
 
     @Provides
     fun provideMedicationDao(db: AppDatabase): MedicationDao = db.medicationDao()

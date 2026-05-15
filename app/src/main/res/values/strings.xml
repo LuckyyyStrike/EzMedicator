@@ -38,6 +38,7 @@
     <!-- Notification settings -->
     <string name="notification_settings">Notification Settings</string>
     <string name="timeout_seconds">Auto-delay after (seconds)</string>
+    <string name="auto_delay_minutes">Auto-delay duration (minutes)</string>
     <string name="vibration">Vibration</string>
     <string name="sound">Sound</string>
     <string name="select_sound">Select sound</string>
