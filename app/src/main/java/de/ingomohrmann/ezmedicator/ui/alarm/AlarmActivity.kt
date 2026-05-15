@@ -1,6 +1,9 @@
 package de.ingomohrmann.ezmedicator.ui.alarm
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
@@ -27,6 +30,11 @@ class AlarmActivity : ComponentActivity() {
     companion object {
         const val EXTRA_REMINDER_ID = "reminder_id"
         const val EXTRA_MEDICATION_NAME = "medication_name"
+        const val ACTION_FINISH = "de.ingomohrmann.ezmedicator.ACTION_FINISH_ALARM"
+    }
+
+    private val finishReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) = finish()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,6 +55,13 @@ class AlarmActivity : ComponentActivity() {
 
         enableEdgeToEdge()
 
+        val filter = IntentFilter(ACTION_FINISH)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(finishReceiver, filter, RECEIVER_NOT_EXPORTED)
+        } else {
+            registerReceiver(finishReceiver, filter)
+        }
+
         val reminderId = intent.getLongExtra(EXTRA_REMINDER_ID, -1L)
         val medicationName = intent.getStringExtra(EXTRA_MEDICATION_NAME) ?: ""
         val notifId = NotificationHelper.notificationId(reminderId)
@@ -66,6 +81,11 @@ class AlarmActivity : ComponentActivity() {
                 )
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(finishReceiver)
     }
 
     private fun dispatch(

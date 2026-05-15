@@ -10,6 +10,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import de.ingomohrmann.ezmedicator.data.repository.ReminderRepository
 import de.ingomohrmann.ezmedicator.domain.ReminderScheduler
 import de.ingomohrmann.ezmedicator.notification.NotificationHelper
+import de.ingomohrmann.ezmedicator.ui.alarm.AlarmActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -52,15 +53,23 @@ class NotificationActionReceiver : BroadcastReceiver() {
     private suspend fun handleDismiss(reminderId: Long, notifId: Int, context: Context) {
         cancelTimeoutAlarm(context, reminderId)
         notificationHelper.dismiss(notifId)
+        sendFinishAlarm(context)
     }
 
     private suspend fun handleDelay(reminderId: Long, notifId: Int, delayMs: Long, context: Context) {
         cancelTimeoutAlarm(context, reminderId)
         notificationHelper.dismiss(notifId)
+        sendFinishAlarm(context)
 
         val snoozeAt = System.currentTimeMillis() + delayMs
         reminderRepository.setSnoozedUntil(reminderId, snoozeAt)
         reminderScheduler.scheduleSnooze(reminderId, snoozeAt)
+    }
+
+    private fun sendFinishAlarm(context: Context) {
+        context.sendBroadcast(
+            Intent(AlarmActivity.ACTION_FINISH).apply { setPackage(context.packageName) }
+        )
     }
 
     private fun cancelTimeoutAlarm(context: Context, reminderId: Long) {
