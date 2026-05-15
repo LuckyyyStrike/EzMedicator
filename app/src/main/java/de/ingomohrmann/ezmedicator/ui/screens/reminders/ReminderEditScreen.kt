@@ -120,6 +120,16 @@ fun ReminderEditScreen(
                 modifier = Modifier.fillMaxWidth(),
             )
 
+            if (de.ingomohrmann.ezmedicator.BuildConfig.DEBUG) {
+                val now = java.time.LocalTime.now().plusMinutes(1)
+                OutlinedButton(
+                    onClick = { viewModel.setCron("${now.minute} ${now.hour} * * *") },
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text("DEBUG: set to now +1 min (${now.hour}:${"%02d".format(now.minute)})")
+                }
+            }
+
             HorizontalDivider()
 
             // Notification settings
