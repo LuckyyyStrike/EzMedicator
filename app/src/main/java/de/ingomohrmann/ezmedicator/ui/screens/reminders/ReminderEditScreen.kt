@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import de.ingomohrmann.ezmedicator.BuildConfig
 import de.ingomohrmann.ezmedicator.R
 import de.ingomohrmann.ezmedicator.ui.components.CronTextField
 
@@ -122,7 +123,7 @@ fun ReminderEditScreen(
                 modifier = Modifier.fillMaxWidth(),
             )
 
-            if (de.ingomohrmann.ezmedicator.BuildConfig.DEBUG) {
+            if (BuildConfig.DEBUG) {
                 val now = java.time.LocalTime.now().plusMinutes(1)
                 OutlinedButton(
                     onClick = { viewModel.setCron("${now.minute} ${now.hour} * * *") },
