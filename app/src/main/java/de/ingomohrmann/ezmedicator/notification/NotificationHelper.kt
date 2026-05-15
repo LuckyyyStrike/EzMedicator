@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioAttributes
 import android.media.RingtoneManager
-import android.net.Uri
 import androidx.core.app.NotificationCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import de.ingomohrmann.ezmedicator.R
@@ -23,7 +22,12 @@ class NotificationHelper @Inject constructor(
     @ApplicationContext private val context: Context,
 ) {
     companion object {
-        const val CHANNEL_ID = "medication_reminders"
+        // Increment the suffix whenever the channel audio/vibration settings change.
+        // Android ignores createNotificationChannel() calls for existing channel IDs,
+        // so a new ID is the only way to apply updated settings.
+        const val CHANNEL_ID = "medication_reminders_v2"
+        private const val CHANNEL_ID_LEGACY = "medication_reminders"
+
         const val EXTRA_REMINDER_ID = "reminder_id"
         const val EXTRA_NOTIFICATION_ID = "notification_id"
 
@@ -34,7 +38,10 @@ class NotificationHelper @Inject constructor(
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     fun createChannel() {
-        // Route sound through the alarm stream so it plays even in silent / DnD mode.
+        // Remove the legacy channel so users don't see it twice in system settings.
+        manager.deleteNotificationChannel(CHANNEL_ID_LEGACY)
+
+        // Route sound through the alarm stream — plays even in silent / DnD mode.
         val alarmAudioAttributes = AudioAttributes.Builder()
             .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
             .setUsage(AudioAttributes.USAGE_ALARM)
@@ -46,11 +53,12 @@ class NotificationHelper @Inject constructor(
             NotificationManager.IMPORTANCE_HIGH,
         ).apply {
             description = context.getString(R.string.notification_channel_desc)
-            enableVibration(true)
             setSound(
                 RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM),
                 alarmAudioAttributes,
             )
+            enableVibration(true)
+            vibrationPattern = longArrayOf(0, 500, 300, 500)
         }
         manager.createNotificationChannel(channel)
     }
@@ -81,29 +89,17 @@ class NotificationHelper @Inject constructor(
             requestCode = notifId + 50_000,
         )
 
-        // Per-reminder sound override (null = use channel default = alarm sound).
-        val soundUri: Uri? = when {
-            !reminder.soundEnabled -> Uri.EMPTY
-            reminder.soundUri != null -> Uri.parse(reminder.soundUri)
-            else -> null // let the channel decide (alarm sound)
-        }
-
-        val vibrationPattern = if (reminder.vibrationEnabled) longArrayOf(0, 500, 300, 500) else null
-
+        // On API 26+, setSound() / setVibrate() on the builder are ignored — the channel
+        // controls both. Sound and vibration are configured in createChannel().
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
             .setContentTitle(context.getString(R.string.notification_title, medication.title))
             .setContentText(medication.title)
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
-            // Full-screen intent fires AlarmActivity when screen is off or app is in background.
             .setFullScreenIntent(fullScreenIntent, /* highPriority = */ true)
             .setAutoCancel(false)
             .setOngoing(true)
-            .apply {
-                soundUri?.let { setSound(it) }
-                vibrationPattern?.let { setVibrate(it) }
-            }
             .addAction(
                 android.R.drawable.ic_menu_close_clear_cancel,
                 context.getString(R.string.notification_dismiss),
