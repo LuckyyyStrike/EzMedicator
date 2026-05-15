@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">EzMedicator</string>
+
+    <!-- Medications -->
+    <string name="medications">Medications</string>
+    <string name="add_medication">Add Medication</string>
+    <string name="edit_medication">Edit Medication</string>
+    <string name="medication_title">Title</string>
+    <string name="medication_title_hint">Medication name</string>
+    <string name="medication_image">Image</string>
+    <string name="add_image">Add Image</string>
+    <string name="change_image">Change Image</string>
+    <string name="remove_image">Remove Image</string>
+    <string name="no_medications">No medications yet.\nTap + to add one.</string>
+    <string name="no_reminders_short">No reminders</string>
+    <string name="one_reminder">1 reminder</string>
+    <string name="n_reminders">%d reminders</string>
+    <string name="delete_medication">Delete medication</string>
+    <string name="delete_medication_confirm">Delete \"%s\" and all its reminders?</string>
+
+    <!-- Reminders -->
+    <string name="reminders">Reminders</string>
+    <string name="add_reminder">Add Reminder</string>
+    <string name="edit_reminder">Edit Reminder</string>
+    <string name="no_reminders">No reminders yet.\nTap + to add one.</string>
+    <string name="reminder_enabled">Enabled</string>
+    <string name="cron_expression">Schedule (cron)</string>
+    <string name="cron_hint">e.g. 0 8 * * *</string>
+    <string name="cron_invalid">Invalid cron expression</string>
+    <string name="cron_description">Runs: %s</string>
+    <string name="next_trigger">Next: %s</string>
+    <string name="skip_next">Skip next occurrence</string>
+    <string name="delay_next">Delay next by…</string>
+    <string name="delete_reminder">Delete reminder</string>
+    <string name="delete_reminder_confirm">Delete this reminder?</string>
+
+    <!-- Notification settings -->
+    <string name="notification_settings">Notification Settings</string>
+    <string name="timeout_seconds">Auto-delay after (seconds)</string>
+    <string name="vibration">Vibration</string>
+    <string name="sound">Sound</string>
+    <string name="select_sound">Select sound</string>
+    <string name="default_sound">Default</string>
+    <string name="silent">Silent</string>
+
+    <!-- Delay dialog -->
+    <string name="delay_title">Delay reminder by</string>
+    <string name="delay_15min">15 minutes</string>
+    <string name="delay_30min">30 minutes</string>
+    <string name="delay_1h">1 hour</string>
+    <string name="delay_2h">2 hours</string>
+    <string name="delay_custom">Custom…</string>
+    <string name="delay_minutes_hint">Minutes</string>
+    <string name="delay_confirm">Delay</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_name">Medication Reminders</string>
+    <string name="notification_channel_desc">Reminders to take your medication</string>
+    <string name="notification_title">Time to take %s</string>
+    <string name="notification_dismiss">Dismiss</string>
+    <string name="notification_delay">Delay 30 min</string>
+
+    <!-- Permissions -->
+    <string name="permission_notifications_title">Notifications required</string>
+    <string name="permission_notifications_message">Allow notifications to receive medication reminders.</string>
+    <string name="permission_exact_alarm_title">Exact alarms required</string>
+    <string name="permission_exact_alarm_message">Grant exact alarm permission so reminders fire at the right time.</string>
+    <string name="permission_open_settings">Open Settings</string>
+    <string name="permission_grant">Grant</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="confirm">Confirm</string>
+    <string name="back">Back</string>
+</resources>
