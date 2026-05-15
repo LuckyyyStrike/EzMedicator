@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
 import de.ingomohrmann.ezmedicator.notification.NotificationHelper
 import de.ingomohrmann.ezmedicator.receiver.NotificationActionReceiver
 import de.ingomohrmann.ezmedicator.ui.theme.EzMedicatorTheme
@@ -30,6 +31,7 @@ class AlarmActivity : ComponentActivity() {
     companion object {
         const val EXTRA_REMINDER_ID = "reminder_id"
         const val EXTRA_MEDICATION_NAME = "medication_name"
+        const val EXTRA_TIMEOUT_SECONDS = "timeout_seconds"
         const val ACTION_FINISH = "de.ingomohrmann.ezmedicator.ACTION_FINISH_ALARM"
     }
 
@@ -64,12 +66,14 @@ class AlarmActivity : ComponentActivity() {
 
         val reminderId = intent.getLongExtra(EXTRA_REMINDER_ID, -1L)
         val medicationName = intent.getStringExtra(EXTRA_MEDICATION_NAME) ?: ""
+        val timeoutSeconds = intent.getIntExtra(EXTRA_TIMEOUT_SECONDS, 0)
         val notifId = NotificationHelper.notificationId(reminderId)
 
         setContent {
             EzMedicatorTheme {
                 AlarmScreen(
                     medicationName = medicationName,
+                    timeoutSeconds = timeoutSeconds,
                     onDismiss = {
                         dispatch(NotificationActionReceiver.ACTION_DISMISS, reminderId, notifId)
                         finish()
@@ -108,6 +112,7 @@ class AlarmActivity : ComponentActivity() {
 @Composable
 private fun AlarmScreen(
     medicationName: String,
+    timeoutSeconds: Int,
     onDismiss: () -> Unit,
     onDelay: (Long) -> Unit,
 ) {
@@ -115,6 +120,16 @@ private fun AlarmScreen(
         LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
     }
     var showDelayMenu by remember { mutableStateOf(false) }
+
+    var remainingSeconds by remember { mutableIntStateOf(timeoutSeconds) }
+    if (timeoutSeconds > 0) {
+        LaunchedEffect(Unit) {
+            while (remainingSeconds > 0) {
+                delay(1_000L)
+                remainingSeconds--
+            }
+        }
+    }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -205,6 +220,16 @@ private fun AlarmScreen(
                             )
                         }
                     }
+                }
+
+                if (timeoutSeconds > 0) {
+                    val minutes = remainingSeconds / 60
+                    val seconds = remainingSeconds % 60
+                    Text(
+                        text = "Auto-delays in %d:%02d".format(minutes, seconds),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                 }
             }
         }

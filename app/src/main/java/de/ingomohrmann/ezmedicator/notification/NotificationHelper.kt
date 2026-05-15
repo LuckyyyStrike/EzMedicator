@@ -73,6 +73,7 @@ class NotificationHelper @Inject constructor(
             Intent(context, AlarmActivity::class.java).apply {
                 putExtra(AlarmActivity.EXTRA_REMINDER_ID, reminder.id)
                 putExtra(AlarmActivity.EXTRA_MEDICATION_NAME, medication.title)
+                putExtra(AlarmActivity.EXTRA_TIMEOUT_SECONDS, reminder.notificationTimeoutSeconds)
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_USER_ACTION
             },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
