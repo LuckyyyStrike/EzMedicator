@@ -12,10 +12,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.ingomohrmann.ezmedicator.R
 import de.ingomohrmann.ezmedicator.data.repository.formatDelayMinutes
+import androidx.compose.foundation.text.KeyboardOptions
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -24,7 +26,11 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val delaySteps by viewModel.delaySteps.collectAsState()
+    val defaultTimeout by viewModel.defaultTimeoutSeconds.collectAsState()
+    val defaultAutoDelay by viewModel.defaultAutoDelayMinutes.collectAsState()
     var showAddDialog by remember { mutableStateOf(false) }
+    var timeoutInput by remember(defaultTimeout) { mutableStateOf(defaultTimeout.toString()) }
+    var autoDelayInput by remember(defaultAutoDelay) { mutableStateOf(defaultAutoDelay.toString()) }
 
     Scaffold(
         topBar = {
@@ -83,6 +89,45 @@ fun SettingsScreen(
                     Spacer(Modifier.width(8.dp))
                     Text(stringResource(R.string.add_delay_step))
                 }
+            }
+
+            item {
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                Text(
+                    stringResource(R.string.new_reminder_defaults),
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(bottom = 4.dp),
+                )
+            }
+
+            item {
+                OutlinedTextField(
+                    value = timeoutInput,
+                    onValueChange = { v ->
+                        timeoutInput = v.filter { it.isDigit() }
+                        timeoutInput.toIntOrNull()?.takeIf { it > 0 }
+                            ?.let { viewModel.saveDefaultTimeoutSeconds(it) }
+                    },
+                    label = { Text(stringResource(R.string.timeout_seconds)) },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+
+            item {
+                OutlinedTextField(
+                    value = autoDelayInput,
+                    onValueChange = { v ->
+                        autoDelayInput = v.filter { it.isDigit() }
+                        autoDelayInput.toIntOrNull()?.takeIf { it > 0 }
+                            ?.let { viewModel.saveDefaultAutoDelayMinutes(it) }
+                    },
+                    label = { Text(stringResource(R.string.auto_delay_minutes)) },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.fillMaxWidth(),
+                )
             }
         }
     }

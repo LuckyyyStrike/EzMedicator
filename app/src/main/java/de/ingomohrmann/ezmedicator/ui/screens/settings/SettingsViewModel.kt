@@ -12,6 +12,8 @@ class SettingsViewModel @Inject constructor(
 ) : ViewModel() {
 
     val delaySteps: StateFlow<List<Int>> = settingsRepository.delaySteps
+    val defaultTimeoutSeconds: StateFlow<Int> = settingsRepository.defaultTimeoutSeconds
+    val defaultAutoDelayMinutes: StateFlow<Int> = settingsRepository.defaultAutoDelayMinutes
 
     fun addStep(minutes: Int) {
         val updated = (delaySteps.value + minutes).distinct().sorted()
@@ -21,4 +23,7 @@ class SettingsViewModel @Inject constructor(
     fun removeStep(minutes: Int) {
         settingsRepository.saveDelaySteps(delaySteps.value.filter { it != minutes })
     }
+
+    fun saveDefaultTimeoutSeconds(value: Int) = settingsRepository.saveDefaultTimeoutSeconds(value)
+    fun saveDefaultAutoDelayMinutes(value: Int) = settingsRepository.saveDefaultAutoDelayMinutes(value)
 }

@@ -75,6 +75,7 @@
     <string name="settings">Settings</string>
     <string name="delay_steps_title">Selectable delay steps</string>
     <string name="add_delay_step">Add step</string>
+    <string name="new_reminder_defaults">New reminder defaults</string>
 
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>

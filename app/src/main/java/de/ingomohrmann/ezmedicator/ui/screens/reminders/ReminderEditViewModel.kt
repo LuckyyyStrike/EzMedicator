@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import de.ingomohrmann.ezmedicator.data.database.entities.Reminder
+import de.ingomohrmann.ezmedicator.data.repository.AppSettingsRepository
 import de.ingomohrmann.ezmedicator.data.repository.ReminderRepository
 import de.ingomohrmann.ezmedicator.domain.CronHelper
 import de.ingomohrmann.ezmedicator.domain.ReminderScheduler
@@ -20,6 +21,7 @@ class ReminderEditViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val reminderRepository: ReminderRepository,
     private val reminderScheduler: ReminderScheduler,
+    private val settingsRepository: AppSettingsRepository,
 ) : ViewModel() {
 
     private val _cronExpression = MutableStateFlow("")
@@ -28,10 +30,10 @@ class ReminderEditViewModel @Inject constructor(
     private val _isEnabled = MutableStateFlow(true)
     val isEnabled: StateFlow<Boolean> = _isEnabled.asStateFlow()
 
-    private val _timeoutSeconds = MutableStateFlow(300)
+    private val _timeoutSeconds = MutableStateFlow(settingsRepository.defaultTimeoutSeconds.value)
     val timeoutSeconds: StateFlow<Int> = _timeoutSeconds.asStateFlow()
 
-    private val _autoDelayMinutes = MutableStateFlow(30)
+    private val _autoDelayMinutes = MutableStateFlow(settingsRepository.defaultAutoDelayMinutes.value)
     val autoDelayMinutes: StateFlow<Int> = _autoDelayMinutes.asStateFlow()
 
     private val _vibrationEnabled = MutableStateFlow(true)
