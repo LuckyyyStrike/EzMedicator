@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Medicine bottle silhouette: wide cap, narrow neck, wide body -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#000000"
+        android:pathData="M7,3 L17,3 L17,5 L14.5,5 L14.5,8 L17,8 L17,21 L7,21 L7,8 L9.5,8 L9.5,5 L7,5 Z"/>
+</vector>

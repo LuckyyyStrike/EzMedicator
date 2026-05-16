@@ -77,7 +77,12 @@ fun MedicationDetailScreen(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(16.dp),
                         ) {
-                            MedicationImage(imagePath = med.imagePath, size = 72.dp)
+                            MedicationImage(
+                                imagePath = med.imagePath,
+                                iconName = med.iconName,
+                                iconColor = med.iconColor,
+                                size = 72.dp,
+                            )
                             Spacer(Modifier.width(16.dp))
                             Text(med.title, style = MaterialTheme.typography.headlineSmall)
                         }

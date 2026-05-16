@@ -12,6 +12,9 @@
     <string name="add_image">Add Image</string>
     <string name="change_image">Change Image</string>
     <string name="remove_image">Remove Image</string>
+    <string name="choose_icon">Choose icon</string>
+    <string name="icon_label">Icon</string>
+    <string name="color_label">Color</string>
     <string name="no_medications">No medications yet.\nTap + to add one.</string>
     <string name="no_reminders_short">No reminders</string>
     <string name="one_reminder">1 reminder</string>

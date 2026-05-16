@@ -120,7 +120,11 @@ private fun MedicationCard(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(start = 12.dp, top = 12.dp, end = 4.dp, bottom = 8.dp),
             ) {
-                MedicationImage(imagePath = item.medication.imagePath)
+                MedicationImage(
+                    imagePath = item.medication.imagePath,
+                    iconName = item.medication.iconName,
+                    iconColor = item.medication.iconColor,
+                )
                 Spacer(Modifier.width(12.dp))
                 Text(
                     text = item.medication.title,

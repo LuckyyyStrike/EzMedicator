@@ -29,6 +29,12 @@ class MedicationEditViewModel @Inject constructor(
     private val _imagePath = MutableStateFlow<String?>(null)
     val imagePath: StateFlow<String?> = _imagePath.asStateFlow()
 
+    private val _iconName = MutableStateFlow<String?>(null)
+    val iconName: StateFlow<String?> = _iconName.asStateFlow()
+
+    private val _iconColor = MutableStateFlow<Int?>(null)
+    val iconColor: StateFlow<Int?> = _iconColor.asStateFlow()
+
     private val _saved = MutableStateFlow(false)
     val saved: StateFlow<Boolean> = _saved.asStateFlow()
 
@@ -41,6 +47,8 @@ class MedicationEditViewModel @Inject constructor(
             existingId = med.id
             _title.value = med.title
             _imagePath.value = med.imagePath
+            _iconName.value = med.iconName
+            _iconColor.value = med.iconColor
         }
     }
 
@@ -53,15 +61,25 @@ class MedicationEditViewModel @Inject constructor(
             context.contentResolver.openInputStream(uri)?.use { input ->
                 FileOutputStream(dest).use { output -> input.copyTo(output) }
             }
-            // Remove old image file if it exists
             _imagePath.value?.let { old -> File(old).takeIf { it.exists() }?.delete() }
             _imagePath.value = dest.absolutePath
+            _iconName.value = null
+            _iconColor.value = null
         }
+    }
+
+    fun setIcon(name: String, color: Int) {
+        _imagePath.value?.let { old -> File(old).takeIf { it.exists() }?.delete() }
+        _imagePath.value = null
+        _iconName.value = name
+        _iconColor.value = color
     }
 
     fun removeImage() {
         _imagePath.value?.let { old -> File(old).takeIf { it.exists() }?.delete() }
         _imagePath.value = null
+        _iconName.value = null
+        _iconColor.value = null
     }
 
     fun save() {
@@ -72,6 +90,8 @@ class MedicationEditViewModel @Inject constructor(
                 id = existingId ?: 0,
                 title = title,
                 imagePath = _imagePath.value,
+                iconName = _iconName.value,
+                iconColor = _iconColor.value,
             )
             medicationRepository.save(medication)
             _saved.value = true

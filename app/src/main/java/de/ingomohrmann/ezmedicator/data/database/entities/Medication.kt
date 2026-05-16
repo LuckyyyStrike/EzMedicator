@@ -8,4 +8,6 @@ data class Medication(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val title: String,
     val imagePath: String? = null,
+    val iconName: String? = null,
+    val iconColor: Int? = null,
 )

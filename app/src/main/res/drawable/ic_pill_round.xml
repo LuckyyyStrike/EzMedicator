@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Round tablet with horizontal score line (evenOdd cutout) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#000000"
+        android:fillType="evenOdd"
+        android:pathData="M3,12 A9,9 0,1,0 21,12 A9,9 0,1,0 3,12 Z M3,11.4 L21,11.4 L21,12.6 L3,12.6 Z"/>
+</vector>

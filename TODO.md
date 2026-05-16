@@ -8,7 +8,7 @@
 - [x] The selection for a notification sound does not work for the alarm. Are they different?
 - [x] Add a reset button next to the manual skip next and delay next to reset to initial scheduled reminded
 - [x] Use the systems default date and time format settings
-- [ ] Add static icons that the user can select from as an image for medications. also let the user choose the color of these icons
+- [x] Add static icons that the user can select from as an image for medications. also let the user choose the color of these icons
 - [ ] Add a log that tracks all actions regarding medications (triggered notifications, manually and auto delayed reminders, dimissed reminders, auto timeouts)
 - [ ] add possibility to secure access to the app with a password, passkey or fingerprint.
 - [ ] Add possibility to hide specific medications behin authorization with a password, passkey or fingerprint
