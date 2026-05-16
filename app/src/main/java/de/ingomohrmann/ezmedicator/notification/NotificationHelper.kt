@@ -12,6 +12,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import de.ingomohrmann.ezmedicator.R
 import de.ingomohrmann.ezmedicator.data.database.entities.Medication
 import de.ingomohrmann.ezmedicator.data.database.entities.Reminder
+import de.ingomohrmann.ezmedicator.data.repository.formatDelayMinutes
 import de.ingomohrmann.ezmedicator.receiver.NotificationActionReceiver
 import de.ingomohrmann.ezmedicator.ui.alarm.AlarmActivity
 import javax.inject.Inject
@@ -27,11 +28,13 @@ class NotificationHelper @Inject constructor(
         // so a new ID is the only way to apply updated settings.
         const val CHANNEL_ID = "medication_reminders_v2"
         private const val CHANNEL_ID_LEGACY = "medication_reminders"
+        const val CHANNEL_ID_INFO = "medication_info"
 
         const val EXTRA_REMINDER_ID = "reminder_id"
         const val EXTRA_NOTIFICATION_ID = "notification_id"
 
         fun notificationId(reminderId: Long) = reminderId.toInt()
+        fun autoDelayedNotificationId(reminderId: Long) = (reminderId + 500_000L).toInt()
     }
 
     private val manager =
@@ -41,13 +44,13 @@ class NotificationHelper @Inject constructor(
         // Remove the legacy channel so users don't see it twice in system settings.
         manager.deleteNotificationChannel(CHANNEL_ID_LEGACY)
 
-        // Route sound through the alarm stream — plays even in silent / DnD mode.
+        // Alarm channel — routes through alarm stream, plays even in silent / DnD.
         val alarmAudioAttributes = AudioAttributes.Builder()
             .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
             .setUsage(AudioAttributes.USAGE_ALARM)
             .build()
 
-        val channel = NotificationChannel(
+        val alarmChannel = NotificationChannel(
             CHANNEL_ID,
             context.getString(R.string.notification_channel_name),
             NotificationManager.IMPORTANCE_HIGH,
@@ -60,7 +63,18 @@ class NotificationHelper @Inject constructor(
             enableVibration(true)
             vibrationPattern = longArrayOf(0, 500, 300, 500)
         }
-        manager.createNotificationChannel(channel)
+        manager.createNotificationChannel(alarmChannel)
+
+        // Info channel — silent, for informational messages like auto-delay confirmations.
+        val infoChannel = NotificationChannel(
+            CHANNEL_ID_INFO,
+            context.getString(R.string.notification_channel_info_name),
+            NotificationManager.IMPORTANCE_DEFAULT,
+        ).apply {
+            setSound(null, null)
+            enableVibration(false)
+        }
+        manager.createNotificationChannel(infoChannel)
     }
 
     fun showReminder(reminder: Reminder, medication: Medication) {
@@ -117,6 +131,23 @@ class NotificationHelper @Inject constructor(
     }
 
     fun dismiss(notificationId: Int) = manager.cancel(notificationId)
+
+    fun showAutoDelayed(medicationName: String, delayMinutes: Int, reminderId: Long) {
+        val notification = NotificationCompat.Builder(context, CHANNEL_ID_INFO)
+            .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
+            .setContentTitle(context.getString(R.string.auto_delayed_title))
+            .setContentText(
+                context.getString(
+                    R.string.auto_delayed_text,
+                    medicationName,
+                    formatDelayMinutes(delayMinutes),
+                )
+            )
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setAutoCancel(true)
+            .build()
+        manager.notify(autoDelayedNotificationId(reminderId), notification)
+    }
 
     private fun actionPendingIntent(
         action: String,

@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import dagger.hilt.android.AndroidEntryPoint
+import de.ingomohrmann.ezmedicator.data.repository.MedicationRepository
 import de.ingomohrmann.ezmedicator.data.repository.ReminderRepository
 import de.ingomohrmann.ezmedicator.domain.ReminderScheduler
 import de.ingomohrmann.ezmedicator.notification.NotificationHelper
@@ -30,6 +31,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
 
     @Inject lateinit var notificationHelper: NotificationHelper
     @Inject lateinit var reminderRepository: ReminderRepository
+    @Inject lateinit var medicationRepository: MedicationRepository
     @Inject lateinit var reminderScheduler: ReminderScheduler
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -42,7 +44,8 @@ class NotificationActionReceiver : BroadcastReceiver() {
             try {
                 when (intent.action) {
                     ACTION_DISMISS -> handleDismiss(reminderId, notifId, context)
-                    ACTION_DELAY, ACTION_TIMEOUT -> handleDelay(reminderId, notifId, delayMs, context)
+                    ACTION_DELAY -> handleDelay(reminderId, notifId, delayMs, context, isAutoDelay = false)
+                    ACTION_TIMEOUT -> handleDelay(reminderId, notifId, delayMs, context, isAutoDelay = true)
                 }
             } finally {
                 result.finish()
@@ -56,7 +59,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
         sendFinishAlarm(context)
     }
 
-    private suspend fun handleDelay(reminderId: Long, notifId: Int, delayMs: Long, context: Context) {
+    private suspend fun handleDelay(reminderId: Long, notifId: Int, delayMs: Long, context: Context, isAutoDelay: Boolean) {
         cancelTimeoutAlarm(context, reminderId)
         notificationHelper.dismiss(notifId)
         sendFinishAlarm(context)
@@ -64,6 +67,13 @@ class NotificationActionReceiver : BroadcastReceiver() {
         val snoozeAt = System.currentTimeMillis() + delayMs
         reminderRepository.setSnoozedUntil(reminderId, snoozeAt)
         reminderScheduler.scheduleSnooze(reminderId, snoozeAt)
+
+        if (isAutoDelay) {
+            val reminder = reminderRepository.getById(reminderId) ?: return
+            val medication = medicationRepository.getById(reminder.medicationId) ?: return
+            val delayMinutes = (delayMs / 60_000L).toInt()
+            notificationHelper.showAutoDelayed(medication.title, delayMinutes, reminderId)
+        }
     }
 
     private fun sendFinishAlarm(context: Context) {

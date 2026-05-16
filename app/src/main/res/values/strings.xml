@@ -58,6 +58,9 @@
     <!-- Notifications -->
     <string name="notification_channel_name">Medication Reminders</string>
     <string name="notification_channel_desc">Reminders to take your medication</string>
+    <string name="notification_channel_info_name">Medication Info</string>
+    <string name="auto_delayed_title">Reminder auto-delayed</string>
+    <string name="auto_delayed_text">%1$s was automatically delayed by %2$s</string>
     <string name="notification_title">Time to take %s</string>
     <string name="notification_dismiss">Dismiss</string>
     <string name="notification_delay">Delay 30 min</string>
