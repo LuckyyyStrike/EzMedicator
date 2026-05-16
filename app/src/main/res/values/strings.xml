@@ -31,6 +31,7 @@
     <string name="cron_description">Runs: %s</string>
     <string name="next_trigger">Next: %s</string>
     <string name="delayed_by">Delayed by %s</string>
+    <string name="reset_next">Reset to scheduled</string>
     <string name="skip_next">Skip next occurrence</string>
     <string name="delay_next">Delay next by…</string>
     <string name="delete_reminder">Delete reminder</string>

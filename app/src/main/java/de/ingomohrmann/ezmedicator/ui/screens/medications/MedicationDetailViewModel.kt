@@ -77,6 +77,18 @@ class MedicationDetailViewModel @Inject constructor(
         }
     }
 
+    fun resetNext(reminder: Reminder) {
+        viewModelScope.launch {
+            val updated = reminder.copy(
+                skipNextOccurrence = false,
+                snoozedUntil = null,
+                delayedByMinutes = null,
+            )
+            reminderRepository.save(updated)
+            reminderScheduler.schedule(updated)
+        }
+    }
+
     fun delete(reminder: Reminder) {
         viewModelScope.launch {
             reminderScheduler.cancel(reminder.id)

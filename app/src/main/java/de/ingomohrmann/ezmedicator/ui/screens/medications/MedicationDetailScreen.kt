@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -110,6 +111,7 @@ fun MedicationDetailScreen(
                         onToggleEnabled = { viewModel.toggleEnabled(reminder) },
                         onToggleSkip = { viewModel.toggleSkipNext(reminder) },
                         onDelay = { delayTarget = reminder },
+                        onReset = { viewModel.resetNext(reminder) },
                         onDelete = { deleteTarget = reminder },
                     )
                 }
@@ -158,6 +160,7 @@ private fun ReminderCard(
     onToggleEnabled: () -> Unit,
     onToggleSkip: () -> Unit,
     onDelay: () -> Unit,
+    onReset: () -> Unit,
     onDelete: () -> Unit,
 ) {
     Card(modifier = Modifier.fillMaxWidth()) {
@@ -203,6 +206,9 @@ private fun ReminderCard(
 
             HorizontalDivider(modifier = Modifier.padding(vertical = 6.dp))
 
+            val isModified = reminder.skipNextOccurrence ||
+                (reminder.snoozedUntil != null && reminder.snoozedUntil > System.currentTimeMillis())
+
             Row(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                 modifier = Modifier.fillMaxWidth(),
@@ -219,6 +225,15 @@ private fun ReminderCard(
                     contentPadding = PaddingValues(horizontal = 8.dp),
                 ) {
                     Text(stringResource(R.string.delay_next), style = MaterialTheme.typography.labelSmall)
+                }
+                if (isModified) {
+                    IconButton(onClick = onReset) {
+                        Icon(
+                            Icons.Outlined.Refresh,
+                            contentDescription = stringResource(R.string.reset_next),
+                            tint = MaterialTheme.colorScheme.secondary,
+                        )
+                    }
                 }
                 IconButton(onClick = onDelete) {
                     Icon(
