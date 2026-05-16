@@ -33,8 +33,8 @@ import kotlinx.coroutines.delay
 import de.ingomohrmann.ezmedicator.notification.NotificationHelper
 import de.ingomohrmann.ezmedicator.receiver.NotificationActionReceiver
 import de.ingomohrmann.ezmedicator.ui.theme.EzMedicatorTheme
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
+import android.text.format.DateFormat
+import java.util.Date
 
 @AndroidEntryPoint
 class AlarmActivity : ComponentActivity() {
@@ -176,8 +176,9 @@ private fun AlarmScreen(
     onDismiss: () -> Unit,
     onDelay: (Long) -> Unit,
 ) {
+    val context = androidx.compose.ui.platform.LocalContext.current
     val time = remember {
-        LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
+        DateFormat.getTimeFormat(context).format(Date())
     }
     var showDelayMenu by remember { mutableStateOf(false) }
 

@@ -1,8 +1,11 @@
 package de.ingomohrmann.ezmedicator.ui.screens.medications
 
+import android.content.Context
+import android.text.format.DateFormat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import de.ingomohrmann.ezmedicator.data.database.entities.Medication
 import de.ingomohrmann.ezmedicator.data.database.entities.Reminder
 import de.ingomohrmann.ezmedicator.data.repository.AppSettingsRepository
@@ -13,12 +16,12 @@ import de.ingomohrmann.ezmedicator.domain.ReminderScheduler
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
 class MedicationDetailViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val medicationRepository: MedicationRepository,
     private val reminderRepository: ReminderRepository,
     private val reminderScheduler: ReminderScheduler,
@@ -106,8 +109,9 @@ class MedicationDetailViewModel @Inject constructor(
                 CronHelper.nextExecution(reminder.cronExpression)?.toInstant()?.toEpochMilli()
         }
         millis ?: return "–"
-        val zdt = java.time.Instant.ofEpochMilli(millis)
-            .atZone(java.time.ZoneId.systemDefault())
-        return DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(zdt)
+        val date = Date(millis)
+        val datePart = DateFormat.getDateFormat(context).format(date)
+        val timePart = DateFormat.getTimeFormat(context).format(date)
+        return "$datePart $timePart"
     }
 }
