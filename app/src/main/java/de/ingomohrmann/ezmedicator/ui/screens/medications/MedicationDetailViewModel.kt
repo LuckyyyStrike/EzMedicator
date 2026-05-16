@@ -76,9 +76,14 @@ class MedicationDetailViewModel @Inject constructor(
     }
 
     fun nextTriggerLabel(reminder: Reminder): String {
-        val millis: Long? = reminder.snoozedUntil?.takeIf { it > System.currentTimeMillis() }
-            ?: CronHelper.nextExecution(reminder.cronExpression)
-                ?.toInstant()?.toEpochMilli()
+        val now = System.currentTimeMillis()
+        val millis: Long? = when {
+            reminder.snoozedUntil != null && reminder.snoozedUntil > now -> reminder.snoozedUntil
+            reminder.skipNextOccurrence ->
+                CronHelper.secondNextExecution(reminder.cronExpression)?.toInstant()?.toEpochMilli()
+            else ->
+                CronHelper.nextExecution(reminder.cronExpression)?.toInstant()?.toEpochMilli()
+        }
         millis ?: return "–"
         val zdt = java.time.Instant.ofEpochMilli(millis)
             .atZone(java.time.ZoneId.systemDefault())
