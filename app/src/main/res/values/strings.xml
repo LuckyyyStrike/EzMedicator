@@ -85,6 +85,18 @@
     <string name="add_delay_step">Add step</string>
     <string name="new_reminder_defaults">New reminder defaults</string>
 
+    <!-- Activity log -->
+    <string name="activity_log">Activity Log</string>
+    <string name="log_triggered">Triggered</string>
+    <string name="log_dismissed">Dismissed</string>
+    <string name="log_delayed_manual">Delayed manually</string>
+    <string name="log_delayed_auto">Auto-delayed</string>
+    <string name="log_skipped">Skipped</string>
+    <string name="log_reset">Reset to scheduled</string>
+    <string name="log_clear">Clear log</string>
+    <string name="log_clear_confirm">Delete all log entries?</string>
+    <string name="log_empty">No activity yet.</string>
+
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
     <string name="delete">Delete</string>

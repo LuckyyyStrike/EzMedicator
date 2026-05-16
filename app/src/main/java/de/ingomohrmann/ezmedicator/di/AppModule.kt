@@ -13,6 +13,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import de.ingomohrmann.ezmedicator.data.database.AppDatabase
+import de.ingomohrmann.ezmedicator.data.database.dao.LogEntryDao
 import de.ingomohrmann.ezmedicator.data.database.dao.MedicationDao
 import de.ingomohrmann.ezmedicator.data.database.dao.ReminderDao
 import javax.inject.Singleton
@@ -40,11 +41,26 @@ object AppModule {
         }
     }
 
+    private val MIGRATION_4_5 = object : Migration(4, 5) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                """CREATE TABLE IF NOT EXISTS log_entries (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                    timestamp INTEGER NOT NULL,
+                    type TEXT NOT NULL,
+                    medicationName TEXT NOT NULL,
+                    reminderId INTEGER NOT NULL,
+                    delayMinutes INTEGER
+                )"""
+            )
+        }
+    }
+
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): AppDatabase =
         Room.databaseBuilder(context, AppDatabase::class.java, "ezmedicator.db")
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
             .build()
 
     @Provides
@@ -52,6 +68,9 @@ object AppModule {
 
     @Provides
     fun provideReminderDao(db: AppDatabase): ReminderDao = db.reminderDao()
+
+    @Provides
+    fun provideLogEntryDao(db: AppDatabase): LogEntryDao = db.logEntryDao()
 
     @Provides
     @Singleton

@@ -8,7 +8,7 @@ import androidx.compose.material.icons.filled.Healing
 import androidx.compose.material.icons.filled.HealthAndSafety
 import androidx.compose.material.icons.filled.LocalPharmacy
 import androidx.compose.material.icons.filled.Medication
-import androidx.compose.material.icons.filled.MedicationLiquid
+import androidx.compose.material.icons.filled.MedicalServices
 import androidx.compose.material.icons.filled.MonitorHeart
 import androidx.compose.material.icons.filled.Science
 import androidx.compose.material.icons.filled.Spa
@@ -35,7 +35,7 @@ object MedicationIcons {
 
     val all: List<IconEntry> = listOf(
         IconEntry("Medication", IconSource.Vector(Icons.Filled.Medication)),
-        IconEntry("MedicationLiquid", IconSource.Vector(Icons.Filled.MedicationLiquid)),
+        IconEntry("MedicalServices", IconSource.Vector(Icons.Filled.MedicalServices)),
         IconEntry("PillRound", IconSource.Resource(R.drawable.ic_pill_round)),
         IconEntry("CapsuleV", IconSource.Resource(R.drawable.ic_pill_capsule_v)),
         IconEntry("PillBottle", IconSource.Resource(R.drawable.ic_pill_bottle)),

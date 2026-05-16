@@ -7,6 +7,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import dagger.hilt.android.AndroidEntryPoint
+import de.ingomohrmann.ezmedicator.data.database.entities.LogEntry
+import de.ingomohrmann.ezmedicator.data.repository.LogRepository
 import de.ingomohrmann.ezmedicator.data.repository.MedicationRepository
 import de.ingomohrmann.ezmedicator.data.repository.ReminderRepository
 import de.ingomohrmann.ezmedicator.domain.ReminderScheduler
@@ -28,6 +30,7 @@ class AlarmReceiver : BroadcastReceiver() {
     @Inject lateinit var medicationRepository: MedicationRepository
     @Inject lateinit var notificationHelper: NotificationHelper
     @Inject lateinit var reminderScheduler: ReminderScheduler
+    @Inject lateinit var logRepository: LogRepository
 
     override fun onReceive(context: Context, intent: Intent) {
         val result = goAsync()
@@ -50,21 +53,30 @@ class AlarmReceiver : BroadcastReceiver() {
         if (!reminder.isEnabled) return
 
         if (!isSnooze && reminder.skipNextOccurrence) {
-            // Skip this occurrence: clear flag, schedule next
             reminderRepository.setSkipNext(reminderId, false)
             reminderScheduler.schedule(reminder.copy(skipNextOccurrence = false))
+            logRepository.log(LogEntry(
+                timestamp = System.currentTimeMillis(),
+                type = LogEntry.TYPE_SKIPPED,
+                medicationName = medication.title,
+                reminderId = reminderId,
+            ))
             return
         }
 
-        // Clear snooze state now that the snooze alarm has fired
         if (isSnooze) {
             reminderRepository.clearDelayState(reminderId)
         }
 
         notificationHelper.showReminder(reminder, medication)
+        logRepository.log(LogEntry(
+            timestamp = System.currentTimeMillis(),
+            type = LogEntry.TYPE_TRIGGERED,
+            medicationName = medication.title,
+            reminderId = reminderId,
+        ))
         scheduleTimeout(context, reminderId, reminder.notificationTimeoutSeconds, reminder.autoDelayMinutes)
 
-        // Schedule the next regular cron occurrence (only for non-snooze alarms)
         if (!isSnooze) {
             reminderScheduler.schedule(reminder.copy(skipNextOccurrence = false, snoozedUntil = null))
         }

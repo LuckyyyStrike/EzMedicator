@@ -16,4 +16,5 @@ sealed class Screen(val route: String) {
             "reminder_edit/$medicationId/$reminderId"
     }
     data object Settings : Screen("settings")
+    data object ActivityLog : Screen("activity_log")
 }

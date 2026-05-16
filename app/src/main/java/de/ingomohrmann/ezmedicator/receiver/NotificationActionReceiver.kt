@@ -7,6 +7,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import dagger.hilt.android.AndroidEntryPoint
+import de.ingomohrmann.ezmedicator.data.database.entities.LogEntry
+import de.ingomohrmann.ezmedicator.data.repository.LogRepository
 import de.ingomohrmann.ezmedicator.data.repository.MedicationRepository
 import de.ingomohrmann.ezmedicator.data.repository.ReminderRepository
 import de.ingomohrmann.ezmedicator.domain.ReminderScheduler
@@ -25,7 +27,6 @@ class NotificationActionReceiver : BroadcastReceiver() {
         const val ACTION_DELAY = "de.ingomohrmann.ezmedicator.ACTION_DELAY"
         const val ACTION_TIMEOUT = "de.ingomohrmann.ezmedicator.ACTION_TIMEOUT"
 
-        /** Default delay applied when user taps "Delay 30 min" or timeout fires. */
         const val DEFAULT_DELAY_MS = 30 * 60 * 1_000L
     }
 
@@ -33,6 +34,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
     @Inject lateinit var reminderRepository: ReminderRepository
     @Inject lateinit var medicationRepository: MedicationRepository
     @Inject lateinit var reminderScheduler: ReminderScheduler
+    @Inject lateinit var logRepository: LogRepository
 
     override fun onReceive(context: Context, intent: Intent) {
         val result = goAsync()
@@ -57,6 +59,15 @@ class NotificationActionReceiver : BroadcastReceiver() {
         cancelTimeoutAlarm(context, reminderId)
         notificationHelper.dismiss(notifId)
         sendFinishAlarm(context)
+
+        val reminder = reminderRepository.getById(reminderId) ?: return
+        val medication = medicationRepository.getById(reminder.medicationId) ?: return
+        logRepository.log(LogEntry(
+            timestamp = System.currentTimeMillis(),
+            type = LogEntry.TYPE_DISMISSED,
+            medicationName = medication.title,
+            reminderId = reminderId,
+        ))
     }
 
     private suspend fun handleDelay(reminderId: Long, notifId: Int, delayMs: Long, context: Context, isAutoDelay: Boolean) {
@@ -69,10 +80,17 @@ class NotificationActionReceiver : BroadcastReceiver() {
         reminderRepository.setSnoozeState(reminderId, snoozeAt, delayMinutes)
         reminderScheduler.scheduleSnooze(reminderId, snoozeAt)
 
+        val reminder = reminderRepository.getById(reminderId) ?: return
+        val medication = medicationRepository.getById(reminder.medicationId) ?: return
+        logRepository.log(LogEntry(
+            timestamp = System.currentTimeMillis(),
+            type = if (isAutoDelay) LogEntry.TYPE_DELAYED_AUTO else LogEntry.TYPE_DELAYED_MANUAL,
+            medicationName = medication.title,
+            reminderId = reminderId,
+            delayMinutes = delayMinutes,
+        ))
+
         if (isAutoDelay) {
-            val reminder = reminderRepository.getById(reminderId) ?: return
-            val medication = medicationRepository.getById(reminder.medicationId) ?: return
-            val delayMinutes = (delayMs / 60_000L).toInt()
             notificationHelper.showAutoDelayed(medication.title, delayMinutes, reminderId)
         }
     }
