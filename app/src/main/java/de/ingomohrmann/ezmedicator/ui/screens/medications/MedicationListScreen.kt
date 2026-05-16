@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -26,6 +27,7 @@ fun MedicationListScreen(
     onEdit: (Long) -> Unit,
     onOpen: (Long) -> Unit,
     onAddReminder: (Long) -> Unit,
+    onSettings: () -> Unit,
     viewModel: MedicationListViewModel = hiltViewModel(),
 ) {
     val items by viewModel.items.collectAsState()
@@ -33,7 +35,14 @@ fun MedicationListScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text(stringResource(R.string.medications)) })
+            TopAppBar(
+                title = { Text(stringResource(R.string.medications)) },
+                actions = {
+                    IconButton(onClick = onSettings) {
+                        Icon(Icons.Filled.Settings, stringResource(R.string.settings))
+                    }
+                },
+            )
         },
         floatingActionButton = {
             FloatingActionButton(onClick = onAdd) {

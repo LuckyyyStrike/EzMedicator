@@ -71,6 +71,11 @@
     <string name="permission_exact_alarm_message">Grant exact alarm permission so reminders fire at the right time.</string>
     <string name="permission_open_settings">Open Settings</string>
     <string name="permission_grant">Grant</string>
+    <!-- Settings -->
+    <string name="settings">Settings</string>
+    <string name="delay_steps_title">Selectable delay steps</string>
+    <string name="add_delay_step">Add step</string>
+
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
     <string name="delete">Delete</string>

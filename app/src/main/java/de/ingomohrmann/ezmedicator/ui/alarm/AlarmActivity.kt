@@ -10,6 +10,10 @@ import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import dagger.hilt.android.AndroidEntryPoint
+import de.ingomohrmann.ezmedicator.data.repository.AppSettingsRepository
+import de.ingomohrmann.ezmedicator.data.repository.formatDelayMinutes
+import javax.inject.Inject
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Alarm
@@ -26,7 +30,10 @@ import de.ingomohrmann.ezmedicator.ui.theme.EzMedicatorTheme
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
+@AndroidEntryPoint
 class AlarmActivity : ComponentActivity() {
+
+    @Inject lateinit var settingsRepository: AppSettingsRepository
 
     companion object {
         const val EXTRA_REMINDER_ID = "reminder_id"
@@ -71,9 +78,11 @@ class AlarmActivity : ComponentActivity() {
 
         setContent {
             EzMedicatorTheme {
+                val delaySteps by settingsRepository.delaySteps.collectAsState()
                 AlarmScreen(
                     medicationName = medicationName,
                     timeoutSeconds = timeoutSeconds,
+                    delaySteps = delaySteps,
                     onDismiss = {
                         dispatch(NotificationActionReceiver.ACTION_DISMISS, reminderId, notifId)
                         finish()
@@ -113,6 +122,7 @@ class AlarmActivity : ComponentActivity() {
 private fun AlarmScreen(
     medicationName: String,
     timeoutSeconds: Int,
+    delaySteps: List<Int>,
     onDismiss: () -> Unit,
     onDelay: (Long) -> Unit,
 ) {
@@ -205,17 +215,12 @@ private fun AlarmScreen(
                         expanded = showDelayMenu,
                         onDismissRequest = { showDelayMenu = false },
                     ) {
-                        listOf(
-                            "5 minutes" to 5L * 60_000,
-                            "15 minutes" to 15L * 60_000,
-                            "30 minutes" to 30L * 60_000,
-                            "1 hour" to 60L * 60_000,
-                        ).forEach { (label, ms) ->
+                        delaySteps.forEach { minutes ->
                             DropdownMenuItem(
-                                text = { Text(label) },
+                                text = { Text(formatDelayMinutes(minutes)) },
                                 onClick = {
                                     showDelayMenu = false
-                                    onDelay(ms)
+                                    onDelay(minutes * 60_000L)
                                 },
                             )
                         }

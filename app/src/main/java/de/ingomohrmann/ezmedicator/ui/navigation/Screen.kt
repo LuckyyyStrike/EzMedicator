@@ -15,4 +15,5 @@ sealed class Screen(val route: String) {
         fun route(medicationId: Long, reminderId: Long = -1) =
             "reminder_edit/$medicationId/$reminderId"
     }
+    data object Settings : Screen("settings")
 }

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.ingomohrmann.ezmedicator.data.database.entities.Medication
 import de.ingomohrmann.ezmedicator.data.database.entities.Reminder
+import de.ingomohrmann.ezmedicator.data.repository.AppSettingsRepository
 import de.ingomohrmann.ezmedicator.data.repository.MedicationRepository
 import de.ingomohrmann.ezmedicator.data.repository.ReminderRepository
 import de.ingomohrmann.ezmedicator.domain.CronHelper
@@ -21,6 +22,7 @@ class MedicationDetailViewModel @Inject constructor(
     private val medicationRepository: MedicationRepository,
     private val reminderRepository: ReminderRepository,
     private val reminderScheduler: ReminderScheduler,
+    private val settingsRepository: AppSettingsRepository,
 ) : ViewModel() {
 
     private val _medication = MutableStateFlow<Medication?>(null)
@@ -28,6 +30,8 @@ class MedicationDetailViewModel @Inject constructor(
 
     private val _reminders = MutableStateFlow<List<Reminder>>(emptyList())
     val reminders: StateFlow<List<Reminder>> = _reminders.asStateFlow()
+
+    val delaySteps: StateFlow<List<Int>> = settingsRepository.delaySteps
 
     fun load(medicationId: Long) {
         viewModelScope.launch {

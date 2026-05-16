@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.ingomohrmann.ezmedicator.R
 import de.ingomohrmann.ezmedicator.data.database.entities.Reminder
+import de.ingomohrmann.ezmedicator.data.repository.formatDelayMinutes
 import de.ingomohrmann.ezmedicator.domain.CronHelper
 import de.ingomohrmann.ezmedicator.ui.components.MedicationImage
 
@@ -33,6 +34,7 @@ fun MedicationDetailScreen(
 
     val medication by viewModel.medication.collectAsState()
     val reminders by viewModel.reminders.collectAsState()
+    val delaySteps by viewModel.delaySteps.collectAsState()
     var deleteTarget by remember { mutableStateOf<Reminder?>(null) }
     var delayTarget by remember { mutableStateOf<Reminder?>(null) }
 
@@ -138,6 +140,7 @@ fun MedicationDetailScreen(
     // Delay picker
     delayTarget?.let { rem ->
         DelayDialog(
+            presets = delaySteps,
             onDismiss = { delayTarget = null },
             onConfirm = { minutes ->
                 viewModel.delayNext(rem, minutes)
@@ -215,10 +218,10 @@ private fun ReminderCard(
 
 @Composable
 private fun DelayDialog(
+    presets: List<Int>,
     onDismiss: () -> Unit,
     onConfirm: (Int) -> Unit,
 ) {
-    val presets = listOf(15 to "15 min", 30 to "30 min", 60 to "1 hour", 120 to "2 hours")
     var customMinutes by remember { mutableStateOf("") }
     var showCustom by remember { mutableStateOf(false) }
 
@@ -227,11 +230,11 @@ private fun DelayDialog(
         title = { Text(stringResource(R.string.delay_title)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                presets.forEach { (minutes, label) ->
+                presets.forEach { minutes ->
                     TextButton(
                         onClick = { onConfirm(minutes) },
                         modifier = Modifier.fillMaxWidth(),
-                    ) { Text(label) }
+                    ) { Text(formatDelayMinutes(minutes)) }
                 }
                 TextButton(
                     onClick = { showCustom = !showCustom },

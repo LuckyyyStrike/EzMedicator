@@ -10,6 +10,7 @@ import de.ingomohrmann.ezmedicator.ui.screens.medications.MedicationDetailScreen
 import de.ingomohrmann.ezmedicator.ui.screens.medications.MedicationEditScreen
 import de.ingomohrmann.ezmedicator.ui.screens.medications.MedicationListScreen
 import de.ingomohrmann.ezmedicator.ui.screens.reminders.ReminderEditScreen
+import de.ingomohrmann.ezmedicator.ui.screens.settings.SettingsScreen
 
 @Composable
 fun AppNavGraph() {
@@ -25,7 +26,12 @@ fun AppNavGraph() {
                 onAddReminder = { medicationId ->
                     navController.navigate(Screen.ReminderEdit().route(medicationId))
                 },
+                onSettings = { navController.navigate(Screen.Settings.route) },
             )
+        }
+
+        composable(Screen.Settings.route) {
+            SettingsScreen(onBack = { navController.popBackStack() })
         }
 
         composable(
