@@ -1,12 +1,13 @@
 # TODO
 - [x] Make the alarm screen disappear after it being automatically delayed
 - [x] Show on the alarm screen the remaining time until timeout for automaticallu delaying the reminder
-- [ ] After manually delaying or skipping next occuerence on the medication overview, refresh the display for 'Next: '
-- [ ] Allow defining the selectable delay steps globally
-- [ ] Allow defining an initial value for auto delay duration and auto delay timeout
-- [ ] Add a textual notification after a reminder has been automatically delayed that notifies the user of the auto delay with the given duration
-- [ ] The selection for a notification sound does not work for the alarm. Are they different?
+- [x] After manually delaying or skipping next occuerence on the medication overview, refresh the display for 'Next: '
+- [x] Allow defining the selectable delay steps globally
+- [x] Allow defining an initial value for auto delay duration and auto delay timeout
+- [x] Add a textual notification after a reminder has been automatically delayed that notifies the user of the auto delay with the given duration
+- [x] The selection for a notification sound does not work for the alarm. Are they different?
 - [ ] Add a reset button next to the manual skip next and delay next to reset to initial scheduled reminded
+- [ ] Use the systems default date and time format settings
 - [ ] Add static icons that the user can select from as an image for medications. also let the user choose the color of these icons
 - [ ] Add a log that tracks all actions regarding medications (triggered notifications, manually and auto delayed reminders, dimissed reminders, auto timeouts)
 - [ ] add possibility to secure access to the app with a password, passkey or fingerprint.
