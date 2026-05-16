@@ -55,7 +55,11 @@ class MedicationDetailViewModel @Inject constructor(
 
     fun toggleSkipNext(reminder: Reminder) {
         viewModelScope.launch {
-            val updated = reminder.copy(skipNextOccurrence = !reminder.skipNextOccurrence)
+            val newSkip = !reminder.skipNextOccurrence
+            val updated = reminder.copy(
+                skipNextOccurrence = newSkip,
+                snoozedUntil = if (newSkip) null else reminder.snoozedUntil,
+            )
             reminderRepository.save(updated)
             reminderScheduler.schedule(updated)
         }
