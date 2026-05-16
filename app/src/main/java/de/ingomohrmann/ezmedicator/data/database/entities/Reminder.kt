@@ -33,4 +33,5 @@ data class Reminder(
     // Scheduling state
     val skipNextOccurrence: Boolean = false,
     val snoozedUntil: Long? = null,
+    val delayedByMinutes: Int? = null,
 )

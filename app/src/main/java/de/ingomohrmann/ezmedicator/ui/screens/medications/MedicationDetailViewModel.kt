@@ -59,6 +59,7 @@ class MedicationDetailViewModel @Inject constructor(
             val updated = reminder.copy(
                 skipNextOccurrence = newSkip,
                 snoozedUntil = if (newSkip) null else reminder.snoozedUntil,
+                delayedByMinutes = if (newSkip) null else reminder.delayedByMinutes,
             )
             reminderRepository.save(updated)
             reminderScheduler.schedule(updated)
@@ -70,7 +71,7 @@ class MedicationDetailViewModel @Inject constructor(
             val baseTime = CronHelper.nextExecution(reminder.cronExpression)
                 ?: ZonedDateTime.now()
             val snoozedUntil = baseTime.toInstant().toEpochMilli() + delayMinutes * 60_000L
-            val updated = reminder.copy(snoozedUntil = snoozedUntil, skipNextOccurrence = false)
+            val updated = reminder.copy(snoozedUntil = snoozedUntil, skipNextOccurrence = false, delayedByMinutes = delayMinutes)
             reminderRepository.save(updated)
             reminderScheduler.schedule(updated)
         }

@@ -173,11 +173,27 @@ private fun ReminderCard(
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
+                    val isDelayed = reminder.delayedByMinutes != null &&
+                        reminder.snoozedUntil != null &&
+                        reminder.snoozedUntil > System.currentTimeMillis()
                     Text(
-                        text = stringResource(R.string.next_trigger, nextLabel),
+                        text = if (isDelayed)
+                            stringResource(R.string.delayed_by, formatDelayMinutes(reminder.delayedByMinutes!!))
+                        else
+                            stringResource(R.string.next_trigger, nextLabel),
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.primary,
+                        color = if (isDelayed)
+                            MaterialTheme.colorScheme.tertiary
+                        else
+                            MaterialTheme.colorScheme.primary,
                     )
+                    if (isDelayed) {
+                        Text(
+                            text = stringResource(R.string.next_trigger, nextLabel),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
                 }
                 Switch(checked = reminder.isEnabled, onCheckedChange = { onToggleEnabled() })
                 IconButton(onClick = onEdit) {

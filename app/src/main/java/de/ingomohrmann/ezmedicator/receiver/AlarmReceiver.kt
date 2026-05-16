@@ -58,7 +58,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
         // Clear snooze state now that the snooze alarm has fired
         if (isSnooze) {
-            reminderRepository.setSnoozedUntil(reminderId, null)
+            reminderRepository.clearDelayState(reminderId)
         }
 
         notificationHelper.showReminder(reminder, medication)

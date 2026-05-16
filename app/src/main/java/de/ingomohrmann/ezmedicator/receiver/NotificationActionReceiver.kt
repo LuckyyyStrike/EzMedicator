@@ -65,7 +65,8 @@ class NotificationActionReceiver : BroadcastReceiver() {
         sendFinishAlarm(context)
 
         val snoozeAt = System.currentTimeMillis() + delayMs
-        reminderRepository.setSnoozedUntil(reminderId, snoozeAt)
+        val delayMinutes = (delayMs / 60_000L).toInt()
+        reminderRepository.setSnoozeState(reminderId, snoozeAt, delayMinutes)
         reminderScheduler.scheduleSnooze(reminderId, snoozeAt)
 
         if (isAutoDelay) {

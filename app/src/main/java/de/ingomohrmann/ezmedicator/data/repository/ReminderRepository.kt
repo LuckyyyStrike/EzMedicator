@@ -29,4 +29,8 @@ class ReminderRepository @Inject constructor(
     suspend fun setSkipNext(id: Long, skip: Boolean) = dao.setSkipNext(id, skip)
 
     suspend fun setSnoozedUntil(id: Long, until: Long?) = dao.setSnoozedUntil(id, until)
+
+    suspend fun setSnoozeState(id: Long, until: Long, minutes: Int) = dao.setSnoozeState(id, until, minutes)
+
+    suspend fun clearDelayState(id: Long) = dao.clearDelayState(id)
 }
