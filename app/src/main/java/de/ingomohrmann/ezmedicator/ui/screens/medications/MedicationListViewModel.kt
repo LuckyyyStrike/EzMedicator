@@ -11,6 +11,7 @@ import de.ingomohrmann.ezmedicator.data.database.entities.Medication
 import de.ingomohrmann.ezmedicator.data.database.entities.Reminder
 import de.ingomohrmann.ezmedicator.data.repository.AppSettingsRepository
 import de.ingomohrmann.ezmedicator.data.repository.LogRepository
+import de.ingomohrmann.ezmedicator.data.repository.formatCountdown
 import de.ingomohrmann.ezmedicator.data.repository.MedicationRepository
 import de.ingomohrmann.ezmedicator.data.repository.ReminderRepository
 import de.ingomohrmann.ezmedicator.domain.CronHelper
@@ -128,6 +129,8 @@ class MedicationListViewModel @Inject constructor(
         val dayOfWeek = SimpleDateFormat("EEE", Locale.getDefault()).format(date)
         val datePart = DateFormat.getDateFormat(context).format(date)
         val timePart = DateFormat.getTimeFormat(context).format(date)
-        return "$dayOfWeek $datePart $timePart"
+        val countdown = formatCountdown(millis)
+        val label = "$dayOfWeek $datePart $timePart"
+        return if (countdown != null) "$label (in $countdown)" else label
     }
 }

@@ -13,6 +13,21 @@ fun formatDelayMinutes(minutes: Int): String = when {
     else -> "${minutes / 60} h ${minutes % 60} min"
 }
 
+fun formatCountdown(targetMillis: Long): String? {
+    val diff = targetMillis - System.currentTimeMillis()
+    if (diff <= 0) return null
+    val totalMinutes = diff / 60_000
+    val days = totalMinutes / (60 * 24)
+    val hours = (totalMinutes % (60 * 24)) / 60
+    val minutes = totalMinutes % 60
+    return when {
+        days > 0 && hours > 0 -> "${days}d ${hours}h"
+        days > 0 -> "${days}d"
+        hours > 0 -> "${hours}h ${minutes}m"
+        else -> "${minutes}m"
+    }
+}
+
 @Singleton
 class AppSettingsRepository @Inject constructor(
     private val prefs: SharedPreferences,
