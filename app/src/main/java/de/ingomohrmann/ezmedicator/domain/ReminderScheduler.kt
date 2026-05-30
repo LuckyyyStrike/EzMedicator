@@ -65,12 +65,11 @@ class ReminderScheduler @Inject constructor(
             if (until > System.currentTimeMillis()) return until
         }
 
-        val baseFrom = ZonedDateTime.now()
-        return if (reminder.skipNextOccurrence) {
-            CronHelper.secondNextExecution(reminder.cronExpression)
-        } else {
-            CronHelper.nextExecution(reminder.cronExpression, baseFrom)
-        }?.toInstant()?.toEpochMilli()
+        // When skip is set we still alarm at the original next occurrence so
+        // AlarmReceiver can silently clear the flag and reschedule. The UI
+        // shows secondNextExecution as the "next visible" time separately.
+        return CronHelper.nextExecution(reminder.cronExpression, ZonedDateTime.now())
+            ?.toInstant()?.toEpochMilli()
     }
 
     private fun buildPendingIntent(
