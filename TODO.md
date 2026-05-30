@@ -17,6 +17,7 @@
 - [x] rename the 'detail' button in the medication detail view to 'Edit Reminders'
 - [x] Rewrite the README.md so it correctly reflects the currently implemented feature scope, planned feature scope using the unmarked items in the TODO.md and a documentation on how to use the app
 - [x] When i press the 'Skip next occurence' on the reminder detail view, the button gets highlighted, but for some reason it wraps the text inside the button which makes it expand vertically. that does not look good
+- [ ] Add widgets to easily skip or delay reminders
 - [ ] add possibility to secure access to the app with a password, passkey or fingerprint.
 - [ ] Add possibility to hide specific medications behin authorization with a password, passkey or fingerprint
 - [ ] Add possibility to prevent editing of specific medicationsn and corresponding reminders without authorization (see above)

@@ -13,6 +13,8 @@ import de.ingomohrmann.ezmedicator.data.repository.MedicationRepository
 import de.ingomohrmann.ezmedicator.data.repository.ReminderRepository
 import de.ingomohrmann.ezmedicator.domain.ReminderScheduler
 import de.ingomohrmann.ezmedicator.notification.NotificationHelper
+import androidx.glance.appwidget.updateAll
+import de.ingomohrmann.ezmedicator.widget.MedicationWidget
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -80,6 +82,7 @@ class AlarmReceiver : BroadcastReceiver() {
         if (!isSnooze) {
             reminderScheduler.schedule(reminder.copy(skipNextOccurrence = false, snoozedUntil = null))
         }
+        MedicationWidget().updateAll(context)
     }
 
     private fun scheduleTimeout(context: Context, reminderId: Long, timeoutSeconds: Int, autoDelayMinutes: Int) {
