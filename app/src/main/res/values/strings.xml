@@ -40,6 +40,7 @@
     <string name="delay_next">Delay next by…</string>
     <string name="delay">Delay</string>
     <string name="details">Details</string>
+    <string name="today">Today: %s</string>
     <string name="delete_reminder">Delete reminder</string>
     <string name="delete_reminder_confirm">Delete this reminder?</string>
 

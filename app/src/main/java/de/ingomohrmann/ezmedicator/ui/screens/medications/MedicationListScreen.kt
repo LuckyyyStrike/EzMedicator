@@ -1,5 +1,6 @@
 package de.ingomohrmann.ezmedicator.ui.screens.medications
 
+import android.text.format.DateFormat
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -13,6 +14,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -21,6 +23,9 @@ import de.ingomohrmann.ezmedicator.data.database.entities.Medication
 import de.ingomohrmann.ezmedicator.data.database.entities.Reminder
 import de.ingomohrmann.ezmedicator.data.repository.formatDelayMinutes
 import de.ingomohrmann.ezmedicator.ui.components.MedicationImage
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,10 +42,27 @@ fun MedicationListScreen(
     var deleteTarget by remember { mutableStateOf<Medication?>(null) }
     var delayTarget by remember { mutableStateOf<Pair<MedicationListItem, Reminder>?>(null) }
 
+    val context = LocalContext.current
+    val todayLabel = remember {
+        val date = Date()
+        val dow = SimpleDateFormat("EEE", Locale.getDefault()).format(date)
+        val datePart = DateFormat.getDateFormat(context).format(date)
+        "$dow $datePart"
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.medications)) },
+                title = {
+                    Column {
+                        Text(stringResource(R.string.medications))
+                        Text(
+                            text = todayLabel,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                },
                 actions = {
                     IconButton(onClick = onSettings) {
                         Icon(Icons.Filled.Settings, stringResource(R.string.settings))

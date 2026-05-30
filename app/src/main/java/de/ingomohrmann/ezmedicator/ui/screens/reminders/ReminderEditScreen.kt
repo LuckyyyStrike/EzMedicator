@@ -2,6 +2,7 @@ package de.ingomohrmann.ezmedicator.ui.screens.reminders
 
 import android.media.RingtoneManager
 import android.net.Uri
+import android.text.format.DateFormat
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
@@ -14,6 +15,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -21,6 +23,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import de.ingomohrmann.ezmedicator.BuildConfig
 import de.ingomohrmann.ezmedicator.R
 import de.ingomohrmann.ezmedicator.ui.components.CronTextField
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,7 +53,13 @@ fun ReminderEditScreen(
     var timeoutInput by remember(timeoutSeconds) { mutableStateOf(timeoutSeconds.toString()) }
     var autoDelayInput by remember(autoDelayMinutes) { mutableStateOf(autoDelayMinutes.toString()) }
 
-    val context = androidx.compose.ui.platform.LocalContext.current
+    val context = LocalContext.current
+    val todayLabel = remember {
+        val date = Date()
+        val dow = SimpleDateFormat("EEE", Locale.getDefault()).format(date)
+        val datePart = DateFormat.getDateFormat(context).format(date)
+        "$dow $datePart"
+    }
     val defaultSoundLabel = stringResource(R.string.default_sound)
     val soundLabel = remember(soundUri, context) {
         soundUri?.let { uri ->
@@ -121,6 +132,12 @@ fun ReminderEditScreen(
                 value = cron,
                 onValueChange = { viewModel.setCron(it) },
                 modifier = Modifier.fillMaxWidth(),
+            )
+
+            Text(
+                text = stringResource(R.string.today, todayLabel),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
             if (BuildConfig.DEBUG) {
