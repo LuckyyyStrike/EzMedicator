@@ -1,5 +1,6 @@
 package de.ingomohrmann.ezmedicator.ui.screens.medications
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -12,7 +13,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import de.ingomohrmann.ezmedicator.R
@@ -168,6 +174,10 @@ private fun ReminderCard(
     onReset: () -> Unit,
     onDelete: () -> Unit,
 ) {
+    val isDelayed = reminder.delayedByMinutes != null &&
+        reminder.snoozedUntil != null &&
+        reminder.snoozedUntil > System.currentTimeMillis()
+
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(12.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -176,32 +186,24 @@ private fun ReminderCard(
                         text = reminder.cronExpression,
                         style = MaterialTheme.typography.bodyLarge.copy(fontFamily = FontFamily.Monospace),
                     )
+                    val tertiaryColor = MaterialTheme.colorScheme.tertiary
                     Text(
-                        text = CronHelper.describe(reminder.cronExpression),
+                        text = buildAnnotatedString {
+                            append(CronHelper.describe(reminder.cronExpression))
+                            if (isDelayed) {
+                                withStyle(SpanStyle(color = tertiaryColor)) {
+                                    append(" (+${formatDelayMinutes(reminder.delayedByMinutes!!)})")
+                                }
+                            }
+                        },
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
-                    val isDelayed = reminder.delayedByMinutes != null &&
-                        reminder.snoozedUntil != null &&
-                        reminder.snoozedUntil > System.currentTimeMillis()
                     Text(
-                        text = if (isDelayed)
-                            stringResource(R.string.delayed_by, formatDelayMinutes(reminder.delayedByMinutes!!))
-                        else
-                            stringResource(R.string.next_trigger, nextLabel),
+                        text = stringResource(R.string.next_trigger, nextLabel),
                         style = MaterialTheme.typography.labelSmall,
-                        color = if (isDelayed)
-                            MaterialTheme.colorScheme.tertiary
-                        else
-                            MaterialTheme.colorScheme.primary,
+                        color = MaterialTheme.colorScheme.primary,
                     )
-                    if (isDelayed) {
-                        Text(
-                            text = stringResource(R.string.next_trigger, nextLabel),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
                 }
                 Switch(checked = reminder.isEnabled, onCheckedChange = { onToggleEnabled() })
                 IconButton(onClick = onEdit) {
@@ -216,29 +218,52 @@ private fun ReminderCard(
 
             Row(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 FilterChip(
                     selected = reminder.skipNextOccurrence,
                     onClick = onToggleSkip,
-                    label = { Text(stringResource(R.string.skip_next), style = MaterialTheme.typography.labelSmall) },
+                    label = {
+                        Text(
+                            text = stringResource(R.string.skip_next),
+                            style = MaterialTheme.typography.labelSmall,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    },
                     modifier = Modifier.weight(1f),
                 )
                 OutlinedButton(
                     onClick = onDelay,
-                    modifier = Modifier.weight(1f),
-                    contentPadding = PaddingValues(horizontal = 8.dp),
-                ) {
-                    Text(stringResource(R.string.delay_next), style = MaterialTheme.typography.labelSmall)
-                }
-                if (isModified) {
-                    IconButton(onClick = onReset) {
-                        Icon(
-                            Icons.Outlined.Refresh,
-                            contentDescription = stringResource(R.string.reset_next),
-                            tint = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.weight(1f).height(32.dp),
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                    colors = if (isDelayed)
+                        ButtonDefaults.outlinedButtonColors(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
                         )
-                    }
+                    else
+                        ButtonDefaults.outlinedButtonColors(),
+                    border = if (isDelayed) null
+                             else BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                ) {
+                    Text(
+                        text = stringResource(R.string.delay_next),
+                        style = MaterialTheme.typography.labelSmall,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+                IconButton(onClick = onReset, enabled = isModified) {
+                    Icon(
+                        Icons.Outlined.Refresh,
+                        contentDescription = stringResource(R.string.reset_next),
+                        tint = if (isModified) MaterialTheme.colorScheme.secondary
+                               else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+                    )
                 }
                 IconButton(onClick = onDelete) {
                     Icon(
