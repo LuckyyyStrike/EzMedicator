@@ -253,7 +253,7 @@ private fun ReminderCard(
 }
 
 @Composable
-private fun DelayDialog(
+internal fun DelayDialog(
     presets: List<Int>,
     onDismiss: () -> Unit,
     onConfirm: (Int) -> Unit,

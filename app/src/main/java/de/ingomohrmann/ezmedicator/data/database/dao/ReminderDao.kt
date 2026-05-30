@@ -27,6 +27,9 @@ interface ReminderDao {
     @Delete
     suspend fun delete(reminder: Reminder)
 
+    @Query("SELECT * FROM reminders ORDER BY medicationId ASC, cronExpression ASC")
+    fun observeAll(): Flow<List<Reminder>>
+
     @Query("SELECT medicationId, COUNT(*) as count FROM reminders GROUP BY medicationId")
     fun observeCountsByMedication(): Flow<List<ReminderCount>>
 

@@ -36,7 +36,10 @@
     <string name="delayed_by">Delayed by %s</string>
     <string name="reset_next">Reset to scheduled</string>
     <string name="skip_next">Skip next occurrence</string>
+    <string name="skip">Skip</string>
     <string name="delay_next">Delay next by…</string>
+    <string name="delay">Delay</string>
+    <string name="details">Details</string>
     <string name="delete_reminder">Delete reminder</string>
     <string name="delete_reminder_confirm">Delete this reminder?</string>
 

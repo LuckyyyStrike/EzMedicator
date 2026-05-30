@@ -10,10 +10,11 @@
 - [x] Use the systems default date and time format settings
 - [x] Add static icons that the user can select from as an image for medications. also let the user choose the color of these icons
 - [x] Add a log that tracks all actions regarding medications (triggered notifications, manually and auto delayed reminders, dimissed reminders, auto timeouts)
-- [ ] Add a short list of a medications reminders in der medication list and move the buttons for skipping and delaying to this short list. the short list should display the date and time of the next occurence including day of week
+- [x] Add a short list of a medications reminders in der medication list and move the buttons for skipping and delaying to this short list. the short list should display the date and time of the next occurence including day of week
 - [ ] Add current date in the medication list and when editing reminders
 - [ ] Add a countdown showing days, hours and minutes left after "next occurence" in parenthesis
 - [ ] When a reminder is marked as being skipped, reset the skip when the original next occurence has been reached. e. g. when i plan a reminder for 12 everyday and i press skip at 10am i want to reset skip at 12 so the alarm will trigger on the next day. 
+- [ ] Rewrite the README.md so it correctly reflects the currently implemented feature scope, planned feature scope using the unmarked items in the TODO.md and a documentation on how to use the app
 - [ ] add possibility to secure access to the app with a password, passkey or fingerprint.
 - [ ] Add possibility to hide specific medications behin authorization with a password, passkey or fingerprint
 - [ ] Add possibility to prevent editing of specific medicationsn and corresponding reminders without authorization (see above)

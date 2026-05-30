@@ -11,6 +11,8 @@ import javax.inject.Singleton
 class ReminderRepository @Inject constructor(
     private val dao: ReminderDao,
 ) {
+    fun observeAll(): Flow<List<Reminder>> = dao.observeAll()
+
     fun observeForMedication(medicationId: Long): Flow<List<Reminder>> =
         dao.observeForMedication(medicationId)
 
