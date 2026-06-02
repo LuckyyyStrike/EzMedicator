@@ -111,6 +111,7 @@ class MedicationDetailViewModel @Inject constructor(
                 delayedByMinutes = null,
             )
             reminderRepository.save(updated)
+            reminderScheduler.cancel(updated.id)
             reminderScheduler.schedule(updated)
             val medName = _medication.value?.title ?: return@launch
             logRepository.log(LogEntry(

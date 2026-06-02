@@ -17,6 +17,8 @@
 - [x] rename the 'detail' button in the medication detail view to 'Edit Reminders'
 - [x] Rewrite the README.md so it correctly reflects the currently implemented feature scope, planned feature scope using the unmarked items in the TODO.md and a documentation on how to use the app
 - [x] When i press the 'Skip next occurence' on the reminder detail view, the button gets highlighted, but for some reason it wraps the text inside the button which makes it expand vertically. that does not look good
+- [x] When a reminder has been delayed and later reset, it does not cancel the scheduled alarm. e.g. i set an alarm for 12:00 and delay it by an hour. i then take my medication at 12:30 and reset the reminder, the alarm still goes off at 13:00
+
 - [ ] Add widgets to easily skip or delay reminders
 - [ ] add possibility to secure access to the app with a password, passkey or fingerprint.
 - [ ] Add possibility to hide specific medications behin authorization with a password, passkey or fingerprint
