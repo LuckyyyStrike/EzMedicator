@@ -105,6 +105,7 @@ class MedicationListViewModel @Inject constructor(
                 delayedByMinutes = null,
             )
             reminderRepository.save(updated)
+            reminderScheduler.cancel(updated.id)
             reminderScheduler.schedule(updated)
             logRepository.log(LogEntry(
                 timestamp = System.currentTimeMillis(),
