@@ -37,6 +37,9 @@ class ReminderScheduler @Inject constructor(
         setAlarm(triggerAtMillis, pending)
     }
 
+    fun isScheduled(reminderId: Long, isSnooze: Boolean): Boolean =
+        buildPendingIntent(reminderId, isSnooze, noCreate = true) != null
+
     fun cancel(reminderId: Long) {
         listOf(false, true).forEach { isSnooze ->
             buildPendingIntent(reminderId, isSnooze, noCreate = true)?.let {

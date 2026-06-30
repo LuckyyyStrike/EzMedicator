@@ -10,6 +10,7 @@ import de.ingomohrmann.ezmedicator.ui.screens.medications.MedicationDetailScreen
 import de.ingomohrmann.ezmedicator.ui.screens.medications.MedicationEditScreen
 import de.ingomohrmann.ezmedicator.ui.screens.medications.MedicationListScreen
 import de.ingomohrmann.ezmedicator.ui.screens.reminders.ReminderEditScreen
+import de.ingomohrmann.ezmedicator.ui.screens.alarms.ScheduledAlarmsScreen
 import de.ingomohrmann.ezmedicator.ui.screens.log.LogScreen
 import de.ingomohrmann.ezmedicator.ui.screens.settings.SettingsScreen
 
@@ -35,11 +36,16 @@ fun AppNavGraph() {
             SettingsScreen(
                 onBack = { navController.popBackStack() },
                 onActivityLog = { navController.navigate(Screen.ActivityLog.route) },
+                onScheduledAlarms = { navController.navigate(Screen.ScheduledAlarms.route) },
             )
         }
 
         composable(Screen.ActivityLog.route) {
             LogScreen(onBack = { navController.popBackStack() })
+        }
+
+        composable(Screen.ScheduledAlarms.route) {
+            ScheduledAlarmsScreen(onBack = { navController.popBackStack() })
         }
 
         composable(

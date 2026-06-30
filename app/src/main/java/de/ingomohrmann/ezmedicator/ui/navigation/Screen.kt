@@ -17,4 +17,5 @@ sealed class Screen(val route: String) {
     }
     data object Settings : Screen("settings")
     data object ActivityLog : Screen("activity_log")
+    data object ScheduledAlarms : Screen("scheduled_alarms")
 }

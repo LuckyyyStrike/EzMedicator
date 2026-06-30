@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Alarm
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -25,6 +26,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 fun SettingsScreen(
     onBack: () -> Unit,
     onActivityLog: () -> Unit,
+    onScheduledAlarms: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val delaySteps by viewModel.delaySteps.collectAsState()
@@ -141,6 +143,17 @@ fun SettingsScreen(
                     Icon(Icons.AutoMirrored.Filled.List, contentDescription = null)
                     Spacer(Modifier.width(8.dp))
                     Text(stringResource(R.string.activity_log))
+                }
+            }
+
+            item {
+                OutlinedButton(
+                    onClick = onScheduledAlarms,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Icon(Icons.Filled.Alarm, contentDescription = null)
+                    Spacer(Modifier.width(8.dp))
+                    Text(stringResource(R.string.scheduled_alarms))
                 }
             }
         }
